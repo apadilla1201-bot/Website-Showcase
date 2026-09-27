@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian Private Aviation</title>
+<meta name="description" content="Meridian Private Aviation. Wheels up in ten minutes. A flight quote answered by a person within fifteen minutes, one price in writing, no surprises.">
+<meta name="theme-color" content="#0f151d">
+<!-- DEPLOY STEP: patch og:url and og:image with the live absolute URL before zipping -->
+<meta property="og:title" content="Meridian Private Aviation">
+<meta property="og:description" content="Wheels up in ten minutes. Private aviation, said quietly.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://example.com/">
+<meta property="og:image" content="https://example.com/assets/hero-ending.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f151d'/%3E%3Cpath d='M4 20h24' stroke='%23e8d6b0' stroke-width='1.5'/%3E%3Cpath d='M16 5v22' stroke='%23e8d6b0' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='20' r='2.4' fill='%23e8d6b0'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;500&family=JetBrains+Mono&family=Marcellus&display=swap" rel="stylesheet">
+<style>
+:root{
+  --canvas:#0f151d;
+  --panel:#171f2a;
+  --accent:#e8d6b0;
+  --accent-hover:#f3e6c8;
+  --accent-muted:rgba(232,214,176,.16);
+  --line:rgba(232,214,176,.45);
+  --text-secondary:#a7b1bf;
+  --text-primary:#f2f0ea;
+  --display:'Marcellus',Georgia,serif;
+  --body:'Albert Sans',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  --ease-io:cubic-bezier(.65,0,.35,1);
+  --tshadow:0 1px 2px rgba(5,5,10,.95),0 3px 12px rgba(5,5,10,.78),0 10px 44px rgba(5,5,10,.8);
+  --gutter:clamp(20px,6vw,96px);
+}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden;overflow-x:clip}
+html{scroll-behavior:smooth;background:var(--canvas)}
+body{margin:0;background:var(--canvas);color:var(--text-primary);font-family:var(--body);font-weight:300;line-height:1.6;font-size:clamp(16px,1.05vw,18px);opacity:0;transition:opacity .9s var(--ease)}
+body.ready{opacity:1}
+body.paused *,body.paused *::before,body.paused *::after{animation-play-state:paused!important}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+h1,h2,h3,p{margin:0}
+.skip{position:absolute;left:-999px;top:8px;background:var(--accent);color:var(--canvas);padding:10px 16px;border-radius:8px;z-index:100;font-weight:500}
+.skip:focus{left:8px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* one environment behind everything */
+.env{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.env .glow{position:absolute;inset:-20%;background:radial-gradient(ellipse 40% 35% at 78% 82%,rgba(232,214,176,.13),rgba(232,214,176,0) 70%),radial-gradient(ellipse 50% 40% at 15% 10%,rgba(90,120,160,.16),rgba(90,120,160,0) 70%);animation:envdrift 90s var(--ease-io) -30s infinite alternate}
+.env .grain{position:absolute;inset:0;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E")}
+.env .mist{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.18;filter:blur(2px);animation:mist 80s linear infinite}
+.env .mist:nth-child(3){left:12%;top:70%;animation-delay:-12s}
+.env .mist:nth-child(4){left:33%;top:40%;animation-delay:-41s;animation-duration:96s}
+.env .mist:nth-child(5){left:61%;top:80%;animation-delay:-63s;animation-duration:110s}
+.env .mist:nth-child(6){left:84%;top:25%;animation-delay:-27s;animation-duration:88s}
+.env .mist:nth-child(7){left:48%;top:12%;animation-delay:-70s;animation-duration:120s}
+@keyframes envdrift{from{transform:translate3d(-2%,-1%,0)}to{transform:translate3d(2%,1.5%,0)}}
+@keyframes mist{0%{transform:translate3d(0,0,0)}50%{transform:translate3d(60px,-140px,0)}100%{transform:translate3d(-40px,-300px,0)}}
+
+/* nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);transition:background .6s var(--ease),backdrop-filter .6s var(--ease)}
+.nav.tint{background:rgba(15,21,29,.72);backdrop-filter:blur(12px)}
+.mark{display:flex;align-items:center;gap:12px;text-decoration:none;font-family:var(--display);letter-spacing:.22em;text-transform:uppercase;font-size:.85rem}
+.mark svg{width:26px;height:26px}
+.nav ul{list-style:none;margin:0;padding:0;display:flex;gap:28px;align-items:baseline}
+.nav li a{text-decoration:none;font-size:.85rem;color:var(--text-secondary);transition:color .4s var(--ease)}
+.nav li a:hover{color:var(--text-primary)}
+.btn{display:inline-block;background:var(--accent);color:var(--canvas);font-weight:500;text-decoration:none;padding:13px 22px;border-radius:999px;border:0;font-family:var(--body);font-size:.95rem;cursor:pointer;transition:background .4s var(--ease),transform .5s var(--ease),box-shadow .5s var(--ease);position:relative}
+.btn:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.btn::after{content:"";position:absolute;inset:-2px;border-radius:999px;box-shadow:0 0 40px 6px rgba(232,214,176,.35);opacity:0;transition:opacity .5s var(--ease);pointer-events:none}
+.btn:hover::after{opacity:1}
+.btn.ghost{background:transparent;color:var(--text-primary);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--accent-muted)}
+.nav .btn{padding:10px 18px;font-size:.85rem}
+@media (max-width:860px){.nav ul{display:none}}
+
+/* hero */
+.hero{position:relative;height:500vh;z-index:1}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--canvas)}
+.poster{position:absolute;inset:0;background-size:cover;background-position:70% 60%}
+.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% 60%;opacity:0;transition:opacity 1.2s var(--ease);will-change:transform;transform:translateZ(0)}
+.stage.video-ready video{opacity:1}
+.stage.video-failed video{display:none}
+.scrim{position:absolute;inset:0;pointer-events:none;background:linear-gradient(112deg,rgba(10,12,18,.58) 0%,rgba(10,12,18,.34) 38%,rgba(10,12,18,0) 62%),radial-gradient(ellipse 120% 90% at 50% 45%,rgba(10,10,18,0) 35%,rgba(10,10,18,.62) 100%)}
+.ring{position:absolute;right:28px;bottom:28px;width:44px;height:44px;color:var(--accent);opacity:.9;transition:opacity .6s var(--ease)}
+.ring circle{transition:stroke-dashoffset .2s linear}
+.stage.video-ready .ring{opacity:0}
+.cue{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);color:var(--text-secondary);font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.8}
+.cue span{display:block;width:1px;height:34px;background:linear-gradient(var(--accent),transparent);animation:cue 2.6s var(--ease-io) -1s infinite}
+@keyframes cue{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.band{position:absolute;left:var(--gutter);top:18vh;width:min(46vw,640px);opacity:0;text-shadow:var(--tshadow);--k:0}
+.band::before{content:"";position:absolute;inset:-34% -26%;pointer-events:none;opacity:calc(.25 + .75*var(--k,1));background:radial-gradient(ellipse 61% 58% at 50% 50%,rgba(5,5,10,.84) 0%,rgba(5,5,10,.64) 42%,rgba(5,5,10,0) 80%)}
+.band>*{position:relative}
+.band .btn{text-shadow:none}
+.kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
+.band .kicker{opacity:var(--k)}
+.hl{font-family:var(--display);font-weight:400;font-size:clamp(2rem,4.4vw,4.6rem);line-height:1.04;letter-spacing:.005em;max-width:16ch}
+.band .sub{margin-top:18px;font-size:clamp(1rem,1.25vw,1.25rem);color:var(--text-secondary);max-width:44ch}
+.w{display:inline-block;white-space:nowrap;margin-right:.26em}
+/* band 1: drift-down */
+.b1 .w{--kc:clamp(0,(var(--k,0) - var(--th,0))*2.8,1);opacity:var(--kc);transform:translateY(calc((1 - var(--kc))*-24px))}
+.b1 .sub{--ks:clamp(0,(var(--k,0) - .55)*3,1);opacity:var(--ks);transform:translateY(calc((1 - var(--ks))*-10px))}
+/* band 2: blur-to-sharp */
+.b2 .stack{position:relative}
+.b2 .soft{position:absolute;inset:0;filter:blur(10px);opacity:calc(1 - var(--k,0))}
+.b2 .sharp{opacity:var(--k,0)}
+/* band 3: approach-from-depth */
+.b3 .hl{opacity:var(--k,0);transform:scale(calc(.82 + .18*var(--k,0)));transform-origin:left center}
+/* band 4: word rise, staged settle */
+.b4 .w{--kc:clamp(0,(var(--k,0) - var(--th,0))*3,1);opacity:var(--kc);transform:translateY(calc((1 - var(--kc))*22px))}
+.b4 .sub{--ks:clamp(0,(var(--k,0) - .66)*4,1);opacity:var(--ks);transform:translateY(calc((1 - var(--ks))*10px))}
+.b4 .cta{--kb:clamp(0,(var(--k,0) - .78)*5,1);opacity:var(--kb);transform:translateY(calc((1 - var(--kb))*10px));margin-top:26px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.b4 .hl{font-size:clamp(2.6rem,6vw,6.4rem);letter-spacing:.06em;text-transform:uppercase}
+.static-copy{display:none;position:absolute;inset:0;padding:calc(var(--gutter) + 48px) var(--gutter) var(--gutter);flex-direction:column;justify-content:flex-end;text-shadow:var(--tshadow);background:linear-gradient(180deg,rgba(15,21,29,.1) 20%,rgba(15,21,29,.82) 100%)}
+.static-copy .btn{text-shadow:none;align-self:flex-start;margin-top:22px}
+.static-copy .sub{margin-top:14px;color:var(--text-secondary);max-width:40ch}
+@media (max-height:560px){.cue,.ring{display:none}}
+
+/* the five static-hero gates, identical in JS */
+@media (max-width:720px),(orientation:portrait) and (max-width:1024px),(orientation:portrait) and (pointer:coarse),(orientation:landscape) and (pointer:coarse) and (max-height:560px),(prefers-reduced-motion:reduce){
+  .hero{height:auto}
+  .stage{position:relative;height:100vh;height:100svh}
+  .band,.cue,.ring,.stage video{display:none}
+  .static-copy{display:flex}
+  .poster{background-image:url("assets/hero-ending.jpg")}
+}
+
+/* sections */
+main{position:relative;z-index:1}
+.wrap{position:relative;padding:0 var(--gutter);max-width:1280px;margin:0 auto}
+section.s{position:relative;z-index:1;padding:clamp(64px,7.5vw,116px) 0}
+.rail{position:absolute;left:50%;top:0;bottom:0;width:1px;pointer-events:none;background:repeating-linear-gradient(180deg,var(--accent) 0 26px,transparent 26px 52px);opacity:.22;transform:scaleY(var(--draw,0));transform-origin:top;z-index:0}
+.rail::after{content:"";position:absolute;left:-2px;top:0;width:5px;height:120px;border-radius:3px;background:linear-gradient(transparent,var(--accent),transparent);opacity:0;animation:railpulse 6s var(--ease-io) -2s infinite}
+.on .rail::after{opacity:.9}
+@keyframes railpulse{0%{transform:translateY(-120px)}100%{transform:translateY(100vh)}}
+@media (max-width:860px){.rail{left:var(--gutter)}}
+.h2{font-family:var(--display);font-weight:400;font-size:clamp(1.9rem,3.6vw,3.4rem);line-height:1.08;max-width:22ch}
+.lede{color:var(--text-secondary);max-width:58ch;margin-top:18px;font-size:1.05rem}
+.hz{display:block;width:64px;height:1px;background:var(--accent);margin-bottom:22px;transform:scaleX(0);transform-origin:left;transition:transform 1.1s var(--ease) .1s}
+.in .hz{transform:scaleX(1)}
+
+/* entrances, prefixed by container */
+.rv .part{opacity:0;transform:translateY(18px);transition:opacity .9s var(--ease),transform 1s var(--ease);transition-delay:var(--d,0s)}
+.rv.in .part{opacity:1;transform:none}
+.rv.done .part{transition-delay:0s!important}
+
+/* settle strip */
+.strip{position:relative;z-index:1;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:baseline;padding:34px var(--gutter);border-top:1px solid rgba(232,214,176,.12);border-bottom:1px solid rgba(232,214,176,.12);background:rgba(15,21,29,.6)}
+.chip{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-secondary);background:rgba(8,8,15,.55);border:1px solid rgba(96,96,126,.3);border-radius:10px;padding:10px 14px;backdrop-filter:blur(10px)}
+.chip b{color:var(--accent);font-weight:400}
+
+/* why */
+.why .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:56px}
+.card{background:var(--panel);border:1px solid rgba(232,214,176,.1);border-radius:18px;overflow:hidden;transition:transform .6s var(--ease),border-color .6s var(--ease)}
+.card:hover{transform:translateY(-4px);border-color:rgba(232,214,176,.32)}
+.card figure{margin:0;aspect-ratio:4/3;overflow:hidden;background:#0b1017}
+.card img{width:100%;height:100%;object-fit:cover;transition:transform 1.6s var(--ease)}
+.card:hover img{transform:scale(1.04)}
+.card .txt{padding:22px 24px 26px}
+.card h3{font-family:var(--display);font-weight:400;font-size:1.35rem;margin-bottom:10px}
+.card p{color:var(--text-secondary);font-size:.98rem}
+.grid .card:nth-child(1){--d:.05s}.grid .card:nth-child(2){--d:.17s}.grid .card:nth-child(3){--d:.29s}
+@media (max-width:860px){.why .grid,.fleet .grid{grid-template-columns:1fr}}
+
+/* how it works, along the rail */
+.how .steps{list-style:none;margin:64px 0 0;padding:0;display:flex;flex-direction:column;gap:44px}
+.how .step{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;position:relative}
+.how .step .tc{font-family:var(--mono);color:var(--accent);font-size:.9rem;letter-spacing:.14em;text-align:right}
+.how .step:nth-child(even) .tc{order:2;text-align:left}
+.how .step:nth-child(even) .body{order:1;text-align:right}
+.how .step .body{max-width:44ch;color:var(--text-secondary)}
+.how .step .body b{display:block;color:var(--text-primary);font-family:var(--display);font-weight:400;font-size:1.4rem;margin-bottom:8px}
+.how .step::before{content:"";position:absolute;left:50%;top:50%;width:11px;height:11px;border-radius:50%;background:var(--canvas);border:1px solid var(--accent);transform:translate(-50%,-50%) scale(.4);opacity:0;transition:transform .8s var(--ease),opacity .8s var(--ease)}
+.how.in .step::before{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.how .step:nth-child(1){--d:.05s}.how .step:nth-child(2){--d:.25s}.how .step:nth-child(3){--d:.45s}
+@media (max-width:860px){.how .step{grid-template-columns:1fr;gap:8px;padding-left:36px}.how .step .tc,.how .step:nth-child(even) .tc{text-align:left;order:0}.how .step:nth-child(even) .body{order:1;text-align:left}.how .step::before{left:var(--gutter);margin-left:0;top:14px;transform:translate(-50%,0) scale(.4)}.how.in .step::before{transform:translate(-50%,0) scale(1)}}
+
+/* wheels up: the interactive moment */
+.hold{text-align:center}
+.hold .lights{display:flex;justify-content:center;gap:10px;margin:36px auto 30px;flex-wrap:wrap;max-width:560px}
+.hold .lights i{display:block;width:14px;height:14px;border-radius:50%;background:rgba(232,214,176,.12);border:1px solid rgba(232,214,176,.28);position:relative;transition:background .3s var(--ease)}
+.hold .lights i::after{content:"";position:absolute;inset:-4px;border-radius:50%;box-shadow:0 0 18px 4px rgba(232,214,176,.55);opacity:0;transition:opacity .35s var(--ease)}
+.hold .lights i.on{background:var(--accent)}
+.hold .lights i.on::after{opacity:1}
+.holdbtn{-webkit-user-select:none;user-select:none;touch-action:none;background:transparent;color:var(--text-primary);border:1px solid var(--line);border-radius:999px;padding:18px 34px;font-family:var(--mono);letter-spacing:.2em;text-transform:uppercase;font-size:.8rem;cursor:pointer;position:relative;overflow:hidden;transition:border-color .4s var(--ease)}
+.holdbtn::before{content:"";position:absolute;inset:0;background:var(--accent-muted);transform:scaleX(var(--p,0));transform-origin:left}
+.holdbtn span{position:relative}
+.holdbtn:hover{border-color:var(--accent)}
+.hold .earned{margin-top:40px;opacity:0;transform:translateY(12px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.hold .earned p{font-family:var(--display);font-size:clamp(1.4rem,2.4vw,2rem);opacity:0;transform:translateY(8px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.hold .earned p:nth-child(2){transition-delay:.25s}
+.hold .earned .btn{opacity:0;transition:opacity .8s var(--ease) .55s,background .4s var(--ease),transform .5s var(--ease);margin-top:24px}
+.hold.lit .earned,.hold.lit .earned p,.hold.lit .earned .btn{opacity:1;transform:none}
+.hold.lit .holdbtn{border-color:var(--accent)}
+
+/* fleet */
+.fleet .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:56px}
+.fleet .card figure{aspect-ratio:16/10}
+.fleet .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.fleet .chips .chip{padding:7px 10px;font-size:.66rem}
+.note{color:var(--text-secondary);font-size:.85rem;margin-top:22px}
+
+/* pricing */
+.price .row{display:grid;grid-template-columns:1fr auto;gap:24px;padding:20px 0;border-bottom:1px solid rgba(232,214,176,.12);font-family:var(--mono);font-size:.9rem;align-items:baseline}
+.price .row:first-child{border-top:1px solid rgba(232,214,176,.12)}
+.price .rows{margin-top:44px;max-width:720px}
+.price .row em{font-style:normal;color:var(--accent);position:relative}
+.price .row em::after{content:"";position:absolute;inset:-6px -10px;border-radius:8px;box-shadow:0 0 22px 2px rgba(232,214,176,.35);opacity:0;animation:glow 5s var(--ease-io) -1.5s infinite}
+.price.on .row em::after{opacity:1}
+@keyframes glow{0%,100%{opacity:.15}50%{opacity:.55}}
+.price .duo{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:start}
+.price .ending{border-radius:18px;overflow:hidden;border:1px solid rgba(232,214,176,.12);aspect-ratio:16/10;background:#0b1017}
+.price .ending img{width:100%;height:100%;object-fit:cover}
+@media (max-width:860px){.price .duo{grid-template-columns:1fr}}
+
+/* quotes */
+.quotes .log{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:48px}
+.quotes blockquote{margin:0;background:var(--panel);border-left:2px solid var(--accent);padding:28px 30px;border-radius:0 18px 18px 0}
+.quotes blockquote p{font-family:var(--display);font-size:1.25rem;line-height:1.45}
+.quotes cite{display:block;font-style:normal;font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-secondary);margin-top:18px}
+.quotes .log blockquote:nth-child(1){--d:.05s}.quotes .log blockquote:nth-child(2){--d:.2s}
+@media (max-width:860px){.quotes .log{grid-template-columns:1fr}}
+
+/* faq */
+.faq .list{margin-top:44px;max-width:780px}
+.faq details{border-top:1px solid rgba(232,214,176,.14)}
+.faq details:last-child{border-bottom:1px solid rgba(232,214,176,.14)}
+.faq summary{cursor:pointer;list-style:none;padding:22px 0;font-family:var(--display);font-size:1.2rem;display:flex;justify-content:space-between;align-items:baseline;gap:20px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-family:var(--mono);color:var(--accent);transition:transform .5s var(--ease)}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{color:var(--text-secondary);padding:0 0 24px;max-width:62ch}
+.faq .list details:nth-child(1){--d:.05s}.faq .list details:nth-child(2){--d:.12s}.faq .list details:nth-child(3){--d:.19s}.faq .list details:nth-child(4){--d:.26s}.faq .list details:nth-child(5){--d:.33s}
+
+/* form */
+.quote .panel{background:var(--panel);border:1px solid rgba(232,214,176,.14);border-radius:24px;padding:clamp(28px,4vw,56px);margin-top:44px;position:relative;overflow:hidden}
+.quote .panel::before{content:"";position:absolute;inset:-40% -20%;background:radial-gradient(ellipse 30% 30% at 85% 90%,rgba(232,214,176,.12),transparent 70%);animation:envdrift 60s var(--ease-io) -20s infinite alternate;pointer-events:none}
+.quote form{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.quote label{display:flex;flex-direction:column;gap:8px;font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-secondary)}
+.quote input{background:rgba(15,21,29,.7);border:1px solid var(--line);border-radius:12px;padding:14px 16px;color:var(--text-primary);font:inherit;font-family:var(--body);font-size:1rem;transition:border-color .4s var(--ease),box-shadow .4s var(--ease)}
+.quote input::placeholder{color:#6f7a89}
+.quote input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-muted)}
+.quote .full{grid-column:1/-1}
+.quote .actions{grid-column:1/-1;display:flex;align-items:baseline;gap:22px;flex-wrap:wrap;margin-top:8px}
+.quote .actions small{color:var(--text-secondary);font-size:.85rem}
+.quote .ok{display:none;position:relative;font-family:var(--display);font-size:1.4rem;line-height:1.4;max-width:30ch}
+.quote .panel.sent form{display:none}
+.quote .panel.sent .ok{display:block}
+@media (max-width:640px){.quote form{grid-template-columns:1fr}}
+
+/* footer */
+footer{position:relative;z-index:1;border-top:1px solid rgba(232,214,176,.12);padding:56px var(--gutter) 40px;color:var(--text-secondary);font-size:.9rem}
+footer .fw{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1.2fr .8fr;gap:40px}
+footer ul{list-style:none;padding:0;margin:0;display:flex;gap:22px;flex-wrap:wrap}
+footer a{text-decoration:none}
+footer a:hover{color:var(--text-primary)}
+footer .disc{max-width:60ch;margin-top:16px}
+footer .tiny{font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;margin-top:28px;grid-column:1/-1}
+@media (max-width:860px){footer .fw{grid-template-columns:1fr}}
+
+@media (pointer:coarse){.btn,.holdbtn,.faq summary{min-height:44px}.btn{display:inline-flex;align-items:center;justify-content:center}}
+
+/* reduced motion, complete */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;transition-delay:0s!important}
+  html{scroll-behavior:auto}
+  body{opacity:1}
+  .rv .part,.hz,.hold .earned,.hold .earned p,.hold .earned .btn{opacity:1;transform:none}
+  .rail{transform:scaleY(1)}
+  .how .step::before{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .hold .lights i{background:var(--accent)}
+  .hold .earned{display:block}
+}
+@media (prefers-reduced-motion:reduce) and (max-width:860px){.how .step::before{transform:translate(-50%,0) scale(1)}}
+body.pinned .rv .part,body.pinned .hz,body.pinned .hold .earned,body.pinned .hold .earned p,body.pinned .hold .earned .btn{opacity:1;transform:none;transition:none}
+body.pinned .rail{transform:scaleY(1)}
+body.pinned .how .step::before{opacity:1;transform:translate(-50%,-50%) scale(1)}
+body.pinned .hold .lights i{background:var(--accent)}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="env" aria-hidden="true"><div class="glow"></div><div class="grain"></div><i class="mist"></i><i class="mist"></i><i class="mist"></i><i class="mist"></i><i class="mist"></i></div>
+
+<nav class="nav" aria-label="Main">
+  <a class="mark" href="#top" aria-label="Meridian, home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 20h24" stroke="#e8d6b0" stroke-width="1.5"/><path d="M16 5v22" stroke="#e8d6b0" stroke-width="1.5"/><circle cx="16" cy="20" r="2.4" fill="#e8d6b0"/></svg>Meridian</a>
+  <ul><li><a href="#fleet">Fleet</a></li><li><a href="#how">How it works</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#faq">Questions</a></li></ul>
+  <a class="btn" href="#quote">Request a quote</a>
+</nav>
+
+<main id="main" tabindex="-1">
+<section class="hero" id="top" aria-label="Meridian">
+  <div class="stage" id="stage">
+    <div class="poster" aria-hidden="true"></div>
+    <video id="hero" preload="none" muted playsinline aria-hidden="true" tabindex="-1"></video>
+    <div class="scrim" aria-hidden="true"></div>
+
+    <div class="band b1" data-a="0" data-b="0.21" data-ramp="0.05">
+      <p class="kicker">Meridian Private Aviation</p>
+      <h1 class="hl split" data-seed="11" data-spread="0.5">Wheels up in ten minutes.</h1>
+      <p class="sub">From the door of the car to the door of the sky.</p>
+    </div>
+    <div class="band b2" data-a="0.25" data-b="0.47">
+      <div class="stack"><p class="hl soft" aria-hidden="true">No lines. No gates. No waiting.</p><p class="hl sharp">No lines. No gates. No waiting.</p></div>
+    </div>
+    <div class="band b3" data-a="0.51" data-b="0.73" data-ramp="0.036">
+      <p class="hl">The aircraft is ready before you ask.</p>
+    </div>
+    <div class="band b4" data-a="0.77" data-b="1" data-ramp="0.05">
+      <p class="hl split" data-seed="7" data-spread="0.4">Meridian</p>
+      <p class="sub">Private aviation, said quietly.</p>
+      <div class="cta"><a class="btn" href="#quote">Request a flight quote</a><a class="btn ghost" href="#how">How it works</a></div>
+    </div>
+
+    <div class="static-copy">
+      <p class="kicker">Meridian Private Aviation</p>
+      <p class="hl">Wheels up in ten minutes.</p>
+      <p class="sub">Private aviation, said quietly. Your aircraft is ready before you ask.</p>
+      <a class="btn" href="#quote">Request a flight quote</a>
+    </div>
+
+    <svg class="ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="126" style="stroke-dashoffset:var(--ld,126)"/></svg>
+    <div class="cue" aria-hidden="true"><span></span>Scroll</div>
+  </div>
+</section>
+
+<div class="strip rv" aria-label="At a glance">
+  <div class="chip part"><b>15 min</b> quote response</div>
+  <div class="chip part" style="--d:.12s"><b>2,400</b> aircraft on call</div>
+  <div class="chip part" style="--d:.24s"><b>7</b> continents, 24 hours</div>
+</div>
+
+<div class="rail" id="rail" aria-hidden="true"></div>
+
+<section class="s why rv" id="why">
+  <div class="wrap">
+    <span class="hz"></span>
+    <p class="kicker part">Why private</p>
+    <h2 class="h2 part" style="--d:.08s">You do not wait for the aircraft. The aircraft waits for you.</h2>
+    <div class="grid">
+      <article class="card part"><figure><img src="assets/why-1.jpg" alt="A dark car parked at the foot of a private jet's boarding stairs at dusk" loading="lazy" width="1920" height="1440"></figure><div class="txt"><h3>Arrive ten minutes before.</h3><p>Drive to the aircraft. Walk up the stairs. Sit down. Security takes seconds at a private terminal, not hours.</p></div></article>
+      <article class="card part"><figure><img src="assets/why-2.jpg" alt="A small airfield beside mountains and a lake in the last light" loading="lazy" width="1920" height="1440"></figure><div class="txt"><h3>Land where you are going.</h3><p>Five thousand airports instead of five hundred. Closer to the meeting, the house, the mountain.</p></div></article>
+      <article class="card part"><figure><img src="assets/why-3.jpg" alt="An empty private jet cabin with a single warm reading light" loading="lazy" width="1920" height="1440"></figure><div class="txt"><h3>Your cabin, your company.</h3><p>No strangers, no announcements, no one in the aisle. Work, sleep, or say nothing at all.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="s how rv" id="how">
+  <div class="wrap">
+    <span class="hz"></span>
+    <p class="kicker part">How it works</p>
+    <h2 class="h2 part" style="--d:.08s">The countdown to the stairs.</h2>
+    <ol class="steps">
+      <li class="step part"><div class="tc">T minus 15 min</div><div class="body"><b>Tell us the route, the date, the number of seats.</b>A real person answers within fifteen minutes with real aircraft and real prices.</div></li>
+      <li class="step part"><div class="tc">T minus 24 hr</div><div class="body"><b>Choose the aircraft.</b>Confirm the crew, the catering, the car. One price, in writing, nothing added later.</div></li>
+      <li class="step part"><div class="tc">T minus 10 min</div><div class="body"><b>Your car pulls to the foot of the stairs.</b>Wheels up.</div></li>
+    </ol>
+  </div>
+</section>
+
+<section class="s hold rv" id="wheelsup">
+  <div class="wrap">
+    <p class="kicker part">Wheels up</p>
+    <h2 class="h2 part" style="--d:.08s;margin:0 auto">Hold to say wheels up.</h2>
+    <p class="lede part" style="--d:.16s;margin-left:auto;margin-right:auto">Press and hold.</p>
+    <div class="lights part" style="--d:.24s" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <button class="holdbtn part" style="--d:.3s" id="holdbtn" type="button" aria-describedby="holdhelp"><span>Hold</span></button>
+    <p id="holdhelp" class="sr">Press and hold to light the runway. Releasing early lets the lights fade back.</p>
+    <div class="earned" aria-live="polite">
+      <p>That is the whole process.</p>
+      <p>Your time, in your hands.</p>
+      <a class="btn" href="#quote">Request a flight quote</a>
+    </div>
+  </div>
+</section>
+
+<section class="s fleet rv" id="fleet">
+  <div class="wrap">
+    <span class="hz"></span>
+    <p class="kicker part">Fleet</p>
+    <h2 class="h2 part" style="--d:.08s">The right aircraft, not the biggest one.</h2>
+    <div class="grid">
+      <article class="card part"><figure><img src="assets/fleet-1.jpg" alt="A light jet on a wet tarmac at dusk" loading="lazy" width="1920" height="1200"></figure><div class="txt"><h3>Light jet</h3><p>Up to 7 seats. 3 hours. New York to Miami, London to Nice.</p><div class="chips"><span class="chip">7 seats</span><span class="chip">3 hr range</span><span class="chip">from 5,800 per hour</span></div></div></article>
+      <article class="card part"><figure><img src="assets/fleet-2.jpg" alt="A midsize jet with its cabin light on, seen from the side at dusk" loading="lazy" width="1920" height="1200"></figure><div class="txt"><h3>Midsize</h3><p>Up to 9 seats. 5 hours. Coast to coast without a stop.</p><div class="chips"><span class="chip">9 seats</span><span class="chip">5 hr range</span><span class="chip">from 7,900 per hour</span></div></div></article>
+      <article class="card part"><figure><img src="assets/fleet-3.jpg" alt="A long-range jet under a deep blue evening sky" loading="lazy" width="1920" height="1200"></figure><div class="txt"><h3>Long range</h3><p>Up to 14 seats. 13 hours. Sleep over the Atlantic, land rested.</p><div class="chips"><span class="chip">14 seats</span><span class="chip">13 hr range</span><span class="chip">from 12,500 per hour</span></div></div></article>
+    </div>
+    <p class="note part" style="--d:.4s">Hourly rates are examples for a fictional brand and change with route, season and aircraft.</p>
+  </div>
+</section>
+
+<section class="s price rv" id="pricing">
+  <div class="wrap">
+    <div class="duo">
+      <div>
+        <span class="hz"></span>
+        <p class="kicker part">Pricing</p>
+        <h2 class="h2 part" style="--d:.08s">One price. In writing. Before you fly.</h2>
+        <p class="lede part" style="--d:.16s">Every quote includes positioning, crew, overnight fees, airport charges and catering. If it is not on the quote, you do not pay it.</p>
+        <div class="rows">
+          <div class="row part" style="--d:.24s"><span>Positioning and crew</span><em>included</em></div>
+          <div class="row part" style="--d:.32s"><span>Airport and handling fees</span><em>included</em></div>
+          <div class="row part" style="--d:.40s"><span>Catering and ground car</span><em>included</em></div>
+        </div>
+      </div>
+      <div class="ending part" style="--d:.2s"><img src="assets/hero-ending.jpg" alt="The aircraft at rest on the tarmac at dusk, stairs down, cabin light glowing" loading="lazy" width="1920" height="1080"></div>
+    </div>
+  </div>
+</section>
+
+<section class="s quotes rv" id="quotes">
+  <div class="wrap">
+    <span class="hz"></span>
+    <p class="kicker part">Flight log</p>
+    <h2 class="h2 part" style="--d:.08s">What people say after they land.</h2>
+    <div class="log">
+      <blockquote class="part"><p>I sent the request from the back of a taxi. Fifteen minutes later I had three aircraft and one price. We flew that evening.</p><cite>J. Okafor, London to Geneva</cite></blockquote>
+      <blockquote class="part"><p>No surprises on the invoice. It matched the quote to the pound. That is why we came back.</p><cite>M. Lindqvist, Stockholm to Palma</cite></blockquote>
+    </div>
+    <p class="note part" style="--d:.35s">Names and quotes are illustrative for a fictional brand.</p>
+  </div>
+</section>
+
+<section class="s faq rv" id="faq">
+  <div class="wrap">
+    <span class="hz"></span>
+    <p class="kicker part">Questions</p>
+    <h2 class="h2 part" style="--d:.08s">The things people ask before they book.</h2>
+    <div class="list">
+      <details class="part"><summary>How fast do you actually reply?</summary><p>Within fifteen minutes, day or night, by a person. Most quotes arrive sooner. Tell us if you need to fly today and we start with the aircraft closest to you.</p></details>
+      <details class="part"><summary>Are there hidden fees?</summary><p>No. The quote includes positioning, crew, overnight charges, airport fees and catering. The invoice matches the quote.</p></details>
+      <details class="part"><summary>Can you fly today?</summary><p>Usually, yes. With 2,400 aircraft on call, a departure within four hours is common on major routes.</p></details>
+      <details class="part"><summary>What if I need to cancel?</summary><p>Cancel free up to 48 hours before departure on most aircraft. The terms are on the quote, in plain words, before you confirm.</p></details>
+      <details class="part"><summary>Will the aircraft be swapped for an older one?</summary><p>The aircraft on your quote is the aircraft you fly. If an operator needs to change it, we tell you first and you choose.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="s quote rv" id="quote">
+  <div class="wrap">
+    <span class="hz"></span>
+    <p class="kicker part">Request a quote</p>
+    <h2 class="h2 part" style="--d:.08s">Where to, and when?</h2>
+    <div class="panel part" style="--d:.16s" id="qpanel">
+      <form id="qform" novalidate>
+        <label>From<input name="from" type="text" placeholder="City or airport" autocomplete="off" required></label>
+        <label>To<input name="to" type="text" placeholder="City or airport" autocomplete="off" required></label>
+        <label>Date<input name="date" type="text" placeholder="Any date, or today"></label>
+        <label>Seats<input name="seats" type="text" placeholder="How many of you" inputmode="numeric"></label>
+        <label class="full">Email or phone<input name="contact" type="text" placeholder="Where the quote should arrive" autocomplete="email" required></label>
+        <div class="actions"><button class="btn" type="submit">Request a flight quote</button><small>A person replies within fifteen minutes. No account, no obligation.</small></div>
+      </form>
+      <p class="ok" role="status">Received. A flight advisor is on it. Expect a reply within fifteen minutes.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="fw">
+    <div>
+      <a class="mark" href="#top"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 20h24" stroke="#e8d6b0" stroke-width="1.5"/><path d="M16 5v22" stroke="#e8d6b0" stroke-width="1.5"/><circle cx="16" cy="20" r="2.4" fill="#e8d6b0"/></svg>Meridian Private Aviation</a>
+      <p class="disc">Meridian is a fictional brand created to showcase a cinematic scroll website. The aircraft, people and prices are illustrative. Imagery is AI generated.</p>
+    </div>
+    <ul><li><a href="#fleet">Fleet</a></li><li><a href="#how">How it works</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#faq">Questions</a></li><li><a href="#quote">Request a quote</a></li></ul>
+    <p class="tiny">MERIDIAN / EST. NOWHERE / 2026</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+'use strict';
+const VIDEO_URL = 'assets/hero-scrub.mp4';
+const VIDEO_BYTES = 2934785;
+const POSTER_URL = 'assets/hero-poster.jpg';
+const stage = document.getElementById('stage');
+const video = document.getElementById('hero');
+const ring = stage.querySelector('.ring');
+const posterLayer = stage.querySelector('.poster');
+const hero = document.querySelector('.hero');
+const bands = [...stage.querySelectorAll('.band')].map(el => ({
+  el, a: +el.dataset.a, b: +el.dataset.b, ramp: el.dataset.ramp ? +el.dataset.ramp : 0, op: -1, k: -1
+}));
+const rmq = matchMedia('(prefers-reduced-motion: reduce)');
+
+/* ---------- split text once, seeded ---------- */
+function rng(seed){ let s = seed >>> 0; return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296; }
+document.querySelectorAll('.split').forEach(el => {
+  const text = el.textContent.trim();
+  const r = rng(+el.dataset.seed || 1);
+  const spread = +el.dataset.spread || 0.5;
+  const words = text.split(/\s+/);
+  const total = words.length;
+  el.innerHTML = '';
+  const sr = document.createElement('span'); sr.className = 'sr'; sr.textContent = text; el.appendChild(sr);
+  const vis = document.createElement('span'); vis.setAttribute('aria-hidden', 'true');
+  words.forEach((w, i) => {
+    const s = document.createElement('span'); s.className = 'w'; s.textContent = w;
+    s.style.setProperty('--th', (i / total * spread + r() * 0.06).toFixed(3));
+    vis.appendChild(s);
+  });
+  el.appendChild(vis);
+});
+
+/* ---------- band math ---------- */
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const smoothstep = (p, e0, e1) => { const t = clamp((p - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
+let loadK = 0, loadStart = 0;
+function updateCaptions(p){
+  bands.forEach((band, i) => {
+    const { a, b } = band;
+    const f = Math.min(0.02, (b - a) / 3);
+    let op = (i === 0 ? 1 : smoothstep(p, a, a + f)) * (i === bands.length - 1 ? 1 : (1 - smoothstep(p, b - f, b)));
+    let k = clamp((p - a) / (band.ramp || Math.min(0.025, (b - a) * 0.35)), 0, 1);
+    if (i === 0) k = Math.max(k, loadK);
+    if (Math.abs(op - band.op) > 0.004 || (op === 0) !== (band.op === 0)) { band.op = op; band.el.style.opacity = op.toFixed(3); }
+    if (Math.abs(k - band.k) > 0.008 || k === 0 || k === 1) { if (k !== band.k) { band.k = k; band.el.style.setProperty('--k', k.toFixed(3)); } }
+  });
+}
+function heroProgress(){
+  const r = hero.getBoundingClientRect();
+  const range = r.height - innerHeight;
+  return range > 0 ? clamp(-r.top / range, 0, 1) : 0;
+}
+
+/* ---------- gated seeks, deadlock safe ---------- */
+let seekBusy = false, pendingTime = null;
+function requestSeek(t){
+  if (!video.duration) return;
+  if (seekBusy) { pendingTime = t; return; }
+  seekBusy = true;
+  video.currentTime = t;
+}
+video.addEventListener('seeked', () => { seekBusy = false; if (pendingTime !== null) { const t = pendingTime; pendingTime = null; requestSeek(t); } });
+video.addEventListener('error', () => { seekBusy = false; pendingTime = null; failVideo(); });
+
+/* ---------- lerp loop that rests ---------- */
+let target = 0, shown = 0, rafId = null, lastTick = 0, heroOnScreen = true;
+function tick(now){
+  const dt = Math.min(100, now - (lastTick || now));
+  lastTick = now;
+  const k = 0.16;
+  shown += (target - shown) * (1 - Math.pow(1 - k, dt / 16.667));
+  if (loadK < 1) { loadK = clamp((now - loadStart) / 1400, 0, 1); loadK = loadK * loadK * (3 - 2 * loadK); }
+  const converged = Math.abs(target - shown) < 0.0005 && loadK >= 1;
+  if (converged) { shown = target; rafId = null; lastTick = 0; } else { rafId = requestAnimationFrame(tick); }
+  requestSeek(shown * video.duration);
+  updateCaptions(shown);
+}
+function onScroll(){
+  target = heroProgress();
+  if (rafId === null && heroOnScreen) rafId = requestAnimationFrame(tick);
+}
+new IntersectionObserver(es => { heroOnScreen = es[0].isIntersecting; if (heroOnScreen) onScroll(); }, { threshold: 0 }).observe(hero);
+
+/* ---------- blob loader with ring and watchdog ---------- */
+let started = false, initDone = false;
+function initHeroOnce(){
+  if (initDone) return; initDone = true;
+  posterLayer.style.backgroundImage = "url('" + POSTER_URL + "')";
+  const img = new Image();
+  img.onload = startBlobFetch; img.onerror = startBlobFetch; img.src = POSTER_URL;
+  setTimeout(startBlobFetch, 4000);
+}
+function startBlobFetch(){ if (started) return; started = true; loadHeroBlob().catch(failVideo); }
+async function loadHeroBlob(){
+  const ctrl = new AbortController();
+  let watchdog = setTimeout(() => ctrl.abort(), 20000);
+  const res = await fetch(VIDEO_URL, { priority: 'low', signal: ctrl.signal });
+  if (!res.ok) throw new Error('video ' + res.status);
+  const total = Number(res.headers.get('Content-Length')) || VIDEO_BYTES;
+  const reader = res.body.getReader();
+  const chunks = []; let got = 0, lastRing = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    clearTimeout(watchdog); watchdog = setTimeout(() => ctrl.abort(), 20000);
+    chunks.push(value); got += value.length;
+    const frac = total ? Math.min(1, got / total) : 0;
+    const now = performance.now();
+    if (now - lastRing > 100 || frac === 1) { lastRing = now; ring.style.setProperty('--ld', Math.round(126 * (1 - frac))); }
+  }
+  clearTimeout(watchdog);
+  ring.style.setProperty('--ld', 0);
+  video.src = URL.createObjectURL(new Blob(chunks));
+  video.load();
+  video.addEventListener('canplay', () => { requestSeek(heroProgress() * video.duration); stage.classList.add('video-ready'); }, { once: true });
+}
+let failed = false;
+function failVideo(){
+  if (failed) return; failed = true;
+  ring.style.display = 'none';
+  stage.classList.add('video-failed');
+}
+
+/* ---------- the five gates, live ---------- */
+const GATES = [
+  '(max-width: 720px)',
+  '(orientation: portrait) and (max-width: 1024px)',
+  '(orientation: portrait) and (pointer: coarse)',
+  '(orientation: landscape) and (pointer: coarse) and (max-height: 560px)',
+  '(prefers-reduced-motion: reduce)'
+];
+let scrubOn = false;
+function enableScrub(){
+  if (scrubOn) return; scrubOn = true;
+  initHeroOnce();
+  addEventListener('scroll', onScroll, { passive: true });
+  bands.forEach(b => { b.op = -1; b.k = -1; });
+  unpinFinalStates();
+  if (!loadStart) loadStart = performance.now();
+  updateCaptions(heroProgress());
+  onScroll();
+}
+function disableScrub(){
+  if (!scrubOn) return; scrubOn = false;
+  removeEventListener('scroll', onScroll);
+  if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+}
+function applyHeroMode(){
+  if (GATES.some(q => matchMedia(q).matches)) disableScrub(); else enableScrub();
+}
+const MQLS = GATES.map(q => matchMedia(q));
+MQLS.forEach(m => m.addEventListener('change', applyHeroMode));
+
+/* ---------- the runway rail draws with scroll ---------- */
+const rail = document.getElementById('rail');
+const main = document.getElementById('main');
+let railDraw = -1;
+function placeRail(){
+  const top = rail.parentElement === main ? hero.offsetHeight + document.querySelector('.strip').offsetHeight : 0;
+  rail.style.top = top + 'px';
+  rail.style.bottom = '0';
+}
+main.appendChild(rail);
+placeRail();
+addEventListener('resize', placeRail);
+function drawRail(){
+  if (document.body.classList.contains('pinned')) return;
+  const r = rail.getBoundingClientRect();
+  const d = clamp((innerHeight * 0.85 - r.top) / r.height, 0, 1);
+  if (Math.abs(d - railDraw) > 0.004 || d === 1 || d === 0) { if (d !== railDraw) { railDraw = d; rail.style.setProperty('--draw', d.toFixed(3)); } }
+}
+addEventListener('scroll', drawRail, { passive: true });
+
+/* ---------- section entrances, then retire the stagger ---------- */
+const rvs = [...document.querySelectorAll('.rv')];
+const io = new IntersectionObserver(es => {
+  es.forEach(e => {
+    const el = e.target;
+    if (e.isIntersecting) {
+      el.classList.add('on');
+      if (!el.classList.contains('in')) { el.classList.add('in'); setTimeout(() => el.classList.add('done'), 1600); }
+    } else { el.classList.remove('on'); }
+  });
+}, { threshold: 0.18 });
+rvs.forEach(el => io.observe(el));
+
+/* ---------- nav tint, delta gated ---------- */
+const nav = document.querySelector('.nav');
+let tinted = false;
+function navTint(){ const t = scrollY > innerHeight * 0.6; if (t !== tinted) { tinted = t; nav.classList.toggle('tint', t); } }
+addEventListener('scroll', navTint, { passive: true });
+
+/* ---------- wheels up: press and hold ---------- */
+const holdSec = document.getElementById('wheelsup');
+const holdBtn = document.getElementById('holdbtn');
+const lights = [...holdSec.querySelectorAll('.lights i')];
+let holdP = 0, holding = false, holdRaf = null, lastHold = 0, litCount = -1, holdDone = false;
+function holdTick(now){
+  const dt = Math.min(100, now - (lastHold || now)); lastHold = now;
+  holdP = clamp(holdP + (holding ? dt / 1600 : -dt / 900), 0, 1);
+  holdBtn.style.setProperty('--p', holdP.toFixed(3));
+  const n = Math.round(holdP * lights.length);
+  if (n !== litCount) { litCount = n; lights.forEach((l, i) => l.classList.toggle('on', i < n)); }
+  if (holdP >= 1 && !holdDone) { holdDone = true; holdSec.classList.add('lit'); holdBtn.querySelector('span').textContent = 'Wheels up'; }
+  if ((holding && holdP < 1) || (!holding && holdP > 0 && !holdDone)) holdRaf = requestAnimationFrame(holdTick); else { holdRaf = null; lastHold = 0; }
+}
+function startHold(e){ if (holdDone) return; e.preventDefault(); holding = true; if (holdRaf === null) holdRaf = requestAnimationFrame(holdTick); }
+function endHold(){ holding = false; if (holdRaf === null && holdP > 0 && !holdDone) holdRaf = requestAnimationFrame(holdTick); }
+holdBtn.addEventListener('pointerdown', startHold);
+addEventListener('pointerup', endHold);
+addEventListener('pointercancel', endHold);
+holdBtn.addEventListener('keydown', e => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) startHold(e); });
+holdBtn.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Enter') endHold(); });
+function completeHold(){ holdP = 1; holdDone = true; holdSec.classList.add('lit'); lights.forEach(l => l.classList.add('on')); holdBtn.style.setProperty('--p', 1); holdBtn.querySelector('span').textContent = 'Wheels up'; }
+
+/* ---------- reduced motion, live, both directions ---------- */
+function pinToFinalStates(){
+  document.body.classList.add('pinned');
+  rvs.forEach(el => el.classList.add('in', 'done'));
+  rail.style.setProperty('--draw', 1);
+  completeHold();
+}
+function unpinFinalStates(){
+  document.body.classList.remove('pinned');
+  railDraw = -1; drawRail();
+}
+rmq.addEventListener('change', e => { if (e.matches) pinToFinalStates(); else applyHeroMode(); });
+if (rmq.matches) pinToFinalStates();
+
+/* ---------- form: JS-only success state ---------- */
+const form = document.getElementById('qform');
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const req = [...form.querySelectorAll('[required]')];
+  const missing = req.find(i => !i.value.trim());
+  if (missing) { missing.focus(); missing.style.borderColor = '#e0a0a0'; return; }
+  document.getElementById('qpanel').classList.add('sent');
+});
+form.querySelectorAll('input').forEach(i => i.addEventListener('input', () => { i.style.borderColor = ''; }));
+
+/* ---------- pause everything on hidden tabs ---------- */
+document.addEventListener('visibilitychange', () => document.body.classList.toggle('paused', document.hidden));
+
+/* ---------- go ---------- */
+applyHeroMode();
+navTint();
+drawRail();
+requestAnimationFrame(() => document.body.classList.add('ready'));
+})();
+</script>
+</body>
+</html>
